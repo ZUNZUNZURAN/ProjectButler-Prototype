@@ -1,0 +1,2 @@
+/* Keeps all navigation reachable on compact desktop viewports. */
+.sidebar { overflow-y: auto; }
