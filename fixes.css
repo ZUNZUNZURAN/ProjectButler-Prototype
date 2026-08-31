@@ -1,1 +1,78 @@
 /* v0.4 operational control surface overrides */
+
+/* Client waiting prototype — based on the supplied SVG.
+   Keep the task bar itself unchanged: this is a local waiting/dependency layer,
+   not a project-wide stopped state. */
+.gantt[data-gantt="xd"]{overflow:visible;z-index:2}
+.gantt[data-gantt="xd"]::after{
+  content:"";
+  position:absolute;
+  left:71.4%;
+  top:37px;
+  width:10.8%;
+  height:1px;
+  background:#f78c8c;
+  z-index:3;
+}
+.gantt[data-gantt="xd"]::before{
+  content:"26.08.22　返答予定\A　　　 CL画像支給";
+  white-space:pre;
+  position:absolute;
+  left:73.8%;
+  top:3px;
+  width:85px;
+  height:29px;
+  padding:5px 7px 3px 18px;
+  border:.5px solid #f7f7f7;
+  border-radius:6px;
+  background:#fff;
+  box-shadow:0 0 9px rgba(0,0,0,.16);
+  color:#2f3746;
+  font-size:7px;
+  font-weight:300;
+  line-height:9px;
+  letter-spacing:0;
+  z-index:5;
+  pointer-events:none;
+}
+.gantt[data-gantt="xd"] .bar::after{
+  content:"進";
+  position:absolute;
+  left:calc(100% + 15px);
+  top:-3px;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#604fd4;
+  color:#fff;
+  font:400 5px/10px "Hiragino Sans",sans-serif;
+  text-align:center;
+  z-index:6;
+  pointer-events:none;
+}
+.gantt[data-gantt="xd"] .bar::before{
+  content:"";
+  position:absolute;
+  left:calc(100% + 1px);
+  top:23px;
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  border:1px solid #f88c8c;
+  background:#fff;
+  box-sizing:border-box;
+  z-index:4;
+  pointer-events:none;
+}
+.gantt[data-gantt="xd"] .baseline::after{
+  content:"";
+  position:absolute;
+  left:calc(100% + 50px);
+  top:6px;
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:#f88c8c;
+  z-index:4;
+  pointer-events:none;
+}
