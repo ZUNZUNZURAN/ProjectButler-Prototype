@@ -26,15 +26,24 @@ Codexでは、設計資料・共通ルール・テンプレートを読む前に
 各repoで:
 
 1. `git status --short`
-2. dirtyなら停止して報告
-3. cleanなら `git fetch origin`
-4. HEADと `origin/main` のahead / behindを確認
-5. main上でbehindのみなら `git pull --ff-only origin main`
-6. detached HEAD / Codex worktreeでbehindのみなら `git merge --ff-only origin/main`
-7. ahead / diverged / main以外で自動解消が必要なら停止して報告
-8. 同期後に再確認
+2. 差分を「保護すべき作業差分」と「既知の生成物」に分類する。
+3. ソース、設計書、設定、ルール、テスト定義など、人が編集した可能性がある差分がある場合は停止して報告する。
+4. build / dist / output / coverage / cache / 一時ZIPなど、生成元と用途が明確な既知の生成物だけがある場合は、それだけを理由に停止しない。
+5. 生成物か判断できない未追跡ファイルがある場合は推測せず停止して報告する。
+6. 安全に続行できるなら `git fetch origin`。
+7. HEADと `origin/main` のahead / behindを確認。
+8. main上でbehindのみなら `git pull --ff-only origin main`。
+9. detached HEAD / Codex worktreeでbehindのみなら `git merge --ff-only origin/main`。
+10. ahead / diverged / main以外で自動解消が必要なら停止して報告。
+11. 同期後に再確認。
 
-禁止: dirty状態でpull、`git reset --hard`、強制checkout、自動rebase、force push、diverged状態の自動解消。
+重要:
+
+- `git status --short` に何か表示されたという事実だけで停止しない。
+- 既知の生成物だけが残っている状態は、作業中ソースのdirty状態と同一視しない。
+- Preflight通過のためだけに生成物を勝手に削除・退避・commitしない。
+
+禁止: 保護すべき作業差分がある状態でpull、`git reset --hard`、強制checkout、自動rebase、force push、diverged状態の自動解消。
 
 ## Required Read Order
 
