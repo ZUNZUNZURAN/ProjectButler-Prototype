@@ -1,10 +1,8 @@
 # AGENTS.md
 
-このリポジトリでAI・Codex・Claude Code・その他エージェントがUI・プロトタイプを作成または修正する場合は、実装開始前に必ず以下を確認する。
+このリポジトリでAI・Codex・Claude Code・その他エージェントがUI・プロトタイプを作成または修正する場合は、以下を必須とする。
 
 ## Agent Project Preflight
-
-標準構成:
 
 ```text
 Agent Project
@@ -13,84 +11,148 @@ Agent Project
 └─ shared
 ```
 
-UI・プロトタイプ作業前に、source folder / additional directory `rules` と `shared` が見えていることを確認する。
+UI作業前に `rules` と `shared` が見えていることを確認する。
 
-どちらかが見えない場合は実装を開始せず、不足を報告する。`rules` / `shared` をこのrepoへコピー・submodule化・推測代替してはいけない。
+どちらかが見えない場合は実装を開始しない。`rules` / `shared` をこのrepoへコピー・submodule化・推測代替してはいけない。
 
-製品実装中は `rules` と `shared` を参照専用として扱う。共通ルール・テンプレート・アイコン自体の変更を明示された場合だけ変更する。
+製品実装中は `rules` と `shared` を参照専用として扱う。
 
 Claude Codeではrepoルート `CLAUDE.md` が `@AGENTS.md` をimportしていることを入口条件とする。
 
 ## Codex Git Sync Before Work
 
-Codexで作業する場合は、設計資料・共通ルール・テンプレートを読む前に、Primary・`rules`・`shared` の3repoを安全に同期する。
+Codexでは、設計資料・共通ルール・テンプレートを読む前にPrimary・`rules`・`shared` の3repoを安全に同期する。
 
 各repoで:
 
 1. `git status --short`
-2. dirtyなら自動同期せず、変更内容を報告して実装開始前に停止する。
-3. cleanなら `git fetch origin`。
-4. HEADと `origin/main` のahead / behindを確認する。
-5. `main` 上でbehindのみなら `git pull --ff-only origin main`。
-6. detached HEAD / Codex worktreeでbehindのみなら `git merge --ff-only origin/main`。既存の通常main worktreeをcheckoutで奪わない。
-7. ahead / diverged / main以外のbranchで同期が必要なら、自動merge・rebase・resetを行わず状態を報告して停止する。
-8. 同期後に状態を再確認する。
+2. dirtyなら停止して報告
+3. cleanなら `git fetch origin`
+4. HEADと `origin/main` のahead / behindを確認
+5. main上でbehindのみなら `git pull --ff-only origin main`
+6. detached HEAD / Codex worktreeでbehindのみなら `git merge --ff-only origin/main`
+7. ahead / diverged / main以外で自動解消が必要なら停止して報告
+8. 同期後に再確認
 
-禁止: dirty状態でのpull、`git reset --hard`、強制checkout、自動rebase、force push、diverged状態の自動解消。
-
-3repoすべてが安全に同期済みであることを確認してから、Required Read Orderへ進む。
+禁止: dirty状態でpull、`git reset --hard`、強制checkout、自動rebase、force push、diverged状態の自動解消。
 
 ## Required Read Order
 
-1. このリポジトリの `PROJECT.md` / `README.md` / 関連設計資料
+1. このrepoの `PROJECT.md` / `README.md` / 関連設計資料
 2. `rules/AGENTS.md`
 3. `rules/README.md`
 4. `rules/cluewly-github-rules.md`
-5. 使用中のAIに対応するsetup
-   - Codex: `rules/codex-project-setup.md`
-   - Claude Code: `rules/claude-project-setup.md`
+5. 使用中AIのsetup
 6. `shared/AGENTS.md`
 7. `shared/template/AGENTS.md`
 8. `shared/template/PROJECT.md`
 9. `shared/template/README.md`
 10. `shared/template/docs/AI_PAGE_CREATION_CHECKLIST.md`
 11. `shared/template/docs/AI_SAFE_EDITING_GUIDE.md`
-12. 対象HTML / CSS / JS
+12. `shared/template/docs/UI_COMPONENTS.md`
+13. 対象HTML / CSS / JS
 
 ## UI / Prototype Rule
 
-- 新規ページは `SIDE NAV` / `SIDE CONTENT` / `MAIN ONLY` の3つから適切なものを先に選ぶ。
-- 選択は見た目ではなく左側領域の役割で判断する。
-- 既存フォント・カラー・余白・角丸・シャドウ・ボタン・フォーム・パネルなど、`shared/template` の既存基本スタイルを優先する。
-- 既存基本スタイルで表現できない場合は、場当たり的なCSSや独自レイアウトを追加せず、ページ固有CSSまたは共通設計変更が必要であることを先に報告する。
-- 3つのMAINを混ぜて独自レイアウトを作らない。
-- `shared/template` の共通層を勝手に変更しない。
-- 指示外のファイルを変更しない。
-- 後勝ちselector、理由のない `!important`、inline style、fix/temp/override/patch用classによる暫定修正を行わない。
-- `shared/template` はデザイン・構造・共通挙動の参照元として扱い、外部パスへの実行時依存を作らない。
-- ProjectButler固有の `projectbutler.css` / `projectbutler.js` はこの製品内でのみ扱い、他製品へ横展開しない。
-- 製品実装の副作用として `rules` / `shared` を変更しない。
+### 新規ページはtemplateをそのまま使う
 
-UI作業では、このファイルだけを読んで実装を開始してはいけない。必ず上記の `rules` と `shared/template` を実ファイルとして参照する。
+新規ページは `shared/template` を参考にして似たものを作ってはいけない。
+
+```text
+設計要件を読む
+↓
+SIDE NAV / SIDE CONTENT / MAIN ONLY を選ぶ
+↓
+対応する shared/template/main-*.html をPrimary側へそのままコピー
+↓
+コピーしたHTMLを直接編集
+↓
+必要な共通CSS/JSもshared/templateから内容変更せずコピー
+↓
+templateにない不足部分だけページ固有実装
+```
+
+`main-*.html` をコピーせずに新しいDOMを組み立てることは禁止する。
+
+### templateの既存ブロックを守る
+
+仕様上変更が不要なtemplateブロックは削除・置換・転用しない。
+
+仕様上変更が必要な箇所も、まず既存HTML構造とclassを残したまま内容を差し替える。
+
+既存構造では要件を実現できない場合だけ、不足部分の追加またはブロック置換を行う。
+
+### 個別UIもtemplateから使う
+
+3 MAINはページ骨格の選択であり、個別UIの再利用元を制限しない。
+
+選択templateに必要な部品がない場合は、他の `main-*.html` とPrimaryの完成済みUIを確認する。
+
+優先順位:
+
+```text
+1. 選択したmain-*.htmlの完成済みUI
+2. 他のmain-*.html / Primaryの完成済みUI
+3. common.css等の共通class
+4. templateでは表現できない不足部分だけ新規実装
+```
+
+既存完成UIがあるのに、別component / class / CSSを作って似せてはいけない。
+
+### 共通CSS/JS
+
+Primaryに承認済み共通層がない新規プロトでは、必要な `common.css` / `layout.css` / `sidebar.css` / `common.js` をshared/templateから内容変更せずコピーする。
+
+Primaryに承認済み共通層がある場合はPrimary側を優先する。
+
+Side Paneは `initResizableSidePane()` を使う。
+
+### ページ固有CSS
+
+ページ固有CSSはtemplateに存在しないページ固有要件だけに使う。
+
+テンプレート由来UIの `height / min-height / padding / gap / font-size / icon size / radius / color / hover / active` を変えるためのCSSを追加しない。
+
+### 禁止
+
+- templateを見て似たDOMを新規作成
+- template既存ブロックを仕様にない別用途へ転用
+- 既存完成UIがあるのに似た新規componentを作成
+- template値の近似再現
+- 後勝ちselector
+- 理由のない `!important`
+- inline style
+- fix/temp/override/patch用class
+- 指示外ファイルの変更
+- 製品実装の副作用として `rules` / `shared` を変更
+- ProjectButler固有コードを他製品へ横展開
+
+## 既存ページ修正
+
+既存ページでは既存実装を優先して保持する。
+
+shared/templateと異なることだけを理由に全面移行しない。
+
+全面移行が必要なら理由と影響範囲を報告し、承認前に実行しない。
 
 ## Completion Guard
 
-製品実装の完了前に、変更境界を確認する。
+完了前に確認する。
+
+- 新規ページで選択した `main-*.html` を実際にコピーしたか
+- 仕様にないtemplateブロックを削除・転用していないか
+- template全体から使える完成済みUIを確認したか
+- 既存完成UIがあるのに似た新規UIを作っていないか
+- template由来UIの寸法・状態をページ固有CSSで変更していないか
+- コピーした共通CSS/JSがshared元と一致しているか
+- completed HTMLを選択templateと比較したか
 
 最低限:
 
 ```text
-Primary:
-  git status --short
-  git diff --check
-
-rules:
-  git status --short
-  git diff --check
-
-shared:
-  git status --short
-  git diff --check
+Primary: git status --short / git diff --check
+rules:   git status --short / git diff --check
+shared:  git status --short / git diff --check
 ```
 
-製品実装タスクでは `rules` / `shared` に意図しない変更がある状態で完了報告しない。
+`rules` / `shared` に意図しない変更がある状態で完了報告しない。
