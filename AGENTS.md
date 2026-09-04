@@ -21,6 +21,25 @@ UI・プロトタイプ作業前に、source folder / additional directory `rule
 
 Claude Codeではrepoルート `CLAUDE.md` が `@AGENTS.md` をimportしていることを入口条件とする。
 
+## Codex Git Sync Before Work
+
+Codexで作業する場合は、設計資料・共通ルール・テンプレートを読む前に、Primary・`rules`・`shared` の3repoを安全に同期する。
+
+各repoで:
+
+1. `git status --short`
+2. dirtyなら自動同期せず、変更内容を報告して実装開始前に停止する。
+3. cleanなら `git fetch origin`。
+4. HEADと `origin/main` のahead / behindを確認する。
+5. `main` 上でbehindのみなら `git pull --ff-only origin main`。
+6. detached HEAD / Codex worktreeでbehindのみなら `git merge --ff-only origin/main`。既存の通常main worktreeをcheckoutで奪わない。
+7. ahead / diverged / main以外のbranchで同期が必要なら、自動merge・rebase・resetを行わず状態を報告して停止する。
+8. 同期後に状態を再確認する。
+
+禁止: dirty状態でのpull、`git reset --hard`、強制checkout、自動rebase、force push、diverged状態の自動解消。
+
+3repoすべてが安全に同期済みであることを確認してから、Required Read Orderへ進む。
+
 ## Required Read Order
 
 1. このリポジトリの `PROJECT.md` / `README.md` / 関連設計資料
